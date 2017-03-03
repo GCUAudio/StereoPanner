@@ -37,7 +37,8 @@
 */
 class StereoPannerAudioProcessorEditor  : public AudioProcessorEditor,
                                           public Timer,
-                                          public SliderListener
+                                          public SliderListener,
+                                          public ButtonListener
 {
 public:
     //==============================================================================
@@ -52,6 +53,7 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 
@@ -62,6 +64,7 @@ private:
 
     //==============================================================================
     ScopedPointer<Slider> sliderPanPosition;
+    ScopedPointer<ToggleButton> togglePanningAlgorithm;
 
 
     //==============================================================================

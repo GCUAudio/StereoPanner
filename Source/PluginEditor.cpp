@@ -39,6 +39,10 @@ StereoPannerAudioProcessorEditor::StereoPannerAudioProcessorEditor ( StereoPanne
     sliderPanPosition->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     sliderPanPosition->addListener (this);
 
+    addAndMakeVisible (togglePanningAlgorithm = new ToggleButton ("new toggle button"));
+    togglePanningAlgorithm->setButtonText (TRANS("Constant Power"));
+    togglePanningAlgorithm->addListener (this);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -57,6 +61,7 @@ StereoPannerAudioProcessorEditor::~StereoPannerAudioProcessorEditor()
     //[/Destructor_pre]
 
     sliderPanPosition = nullptr;
+    togglePanningAlgorithm = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -81,6 +86,7 @@ void StereoPannerAudioProcessorEditor::resized()
     //[/UserPreResize]
 
     sliderPanPosition->setBounds (24, 24, 159, 168);
+    togglePanningAlgorithm->setBounds (64, 216, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -99,6 +105,22 @@ void StereoPannerAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWas
 
     //[UsersliderValueChanged_Post]
     //[/UsersliderValueChanged_Post]
+}
+
+void StereoPannerAudioProcessorEditor::buttonClicked (Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == togglePanningAlgorithm)
+    {
+        //[UserButtonCode_togglePanningAlgorithm] -- add your button handler code here..
+        processor.constantPower = togglePanningAlgorithm->getToggleState();
+        //[/UserButtonCode_togglePanningAlgorithm]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
 }
 
 
@@ -130,6 +152,9 @@ BEGIN_JUCER_METADATA
           virtualName="" explicitFocusOrder="0" pos="24 24 159 168" min="-1"
           max="1" int="0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+  <TOGGLEBUTTON name="new toggle button" id="623ec6df99e7a96e" memberName="togglePanningAlgorithm"
+                virtualName="" explicitFocusOrder="0" pos="64 216 150 24" buttonText="Constant Power"
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
