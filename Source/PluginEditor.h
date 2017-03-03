@@ -36,7 +36,8 @@
                                                                     //[/Comments]
 */
 class StereoPannerAudioProcessorEditor  : public AudioProcessorEditor,
-                                          public Timer
+                                          public Timer,
+                                          public SliderListener
 {
 public:
     //==============================================================================
@@ -50,6 +51,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
 
@@ -59,6 +61,7 @@ private:
     //[/UserVariables]
 
     //==============================================================================
+    ScopedPointer<Slider> sliderPanPosition;
 
 
     //==============================================================================
