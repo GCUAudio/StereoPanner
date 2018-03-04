@@ -133,7 +133,8 @@ void StereoPannerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBu
         buffer.clear (i, 0, buffer.getNumSamples());
     
     // Retrieve the total number of samples in the buffer for this block
-    const  int numSamples = buffer.getNumSamples();
+    const int numSamples = buffer.getNumSamples();
+	const float PI = 3.14159265359f;
     
     // channelDataL and channelDataR are pointers to arrays of length numSamples which // contain the audio for one channel. You repeat this for each channel
     float *channelDataL = buffer.getWritePointer(0);
@@ -150,7 +151,7 @@ void StereoPannerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBu
         if(constantPower)
         {
             // Constant power panning algorithm
-            pDash = (temp * M_PI) / 4;
+            pDash = (temp * PI) / 4;
             channelDataL[i] = channelDataL[i] * cos(pDash);
             channelDataR[i] = channelDataR[i] * sin(pDash);
         }

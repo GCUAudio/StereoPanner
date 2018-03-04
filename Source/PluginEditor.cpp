@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 4.3.0
+  Created with Projucer version: 5.1.1
 
   ------------------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ void StereoPannerAudioProcessorEditor::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colours::white);
+    g.fillAll (Colours::black);
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -147,7 +147,7 @@ BEGIN_JUCER_METADATA
                  constructorParams=" StereoPannerAudioProcessor&amp; p" variableInitialisers="AudioProcessorEditor(p), processor(p)&#10;"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">
-  <BACKGROUND backgroundColour="ffffffff"/>
+  <BACKGROUND backgroundColour="ff000000"/>
   <SLIDER name="new slider" id="6d5ba74f0492c1e4" memberName="sliderPanPosition"
           virtualName="" explicitFocusOrder="0" pos="24 24 159 168" min="-1"
           max="1" int="0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
