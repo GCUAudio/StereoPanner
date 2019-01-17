@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.1
+  Created with Projucer version: 5.4.1
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -33,15 +33,21 @@ StereoPannerAudioProcessorEditor::StereoPannerAudioProcessorEditor ( StereoPanne
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    addAndMakeVisible (sliderPanPosition = new Slider ("new slider"));
+    sliderPanPosition.reset (new Slider ("new slider"));
+    addAndMakeVisible (sliderPanPosition.get());
     sliderPanPosition->setRange (-1, 1, 0);
     sliderPanPosition->setSliderStyle (Slider::Rotary);
     sliderPanPosition->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     sliderPanPosition->addListener (this);
 
-    addAndMakeVisible (togglePanningAlgorithm = new ToggleButton ("new toggle button"));
+    sliderPanPosition->setBounds (24, 24, 159, 168);
+
+    togglePanningAlgorithm.reset (new ToggleButton ("new toggle button"));
+    addAndMakeVisible (togglePanningAlgorithm.get());
     togglePanningAlgorithm->setButtonText (TRANS("Constant Power"));
     togglePanningAlgorithm->addListener (this);
+
+    togglePanningAlgorithm->setBounds (64, 216, 150, 24);
 
 
     //[UserPreSize]
@@ -85,8 +91,6 @@ void StereoPannerAudioProcessorEditor::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    sliderPanPosition->setBounds (24, 24, 159, 168);
-    togglePanningAlgorithm->setBounds (64, 216, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -96,7 +100,7 @@ void StereoPannerAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWas
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == sliderPanPosition)
+    if (sliderThatWasMoved == sliderPanPosition.get())
     {
         //[UserSliderCode_sliderPanPosition] -- add your slider handling code here..
         processor.panPosition = sliderPanPosition->getValue();
@@ -112,7 +116,7 @@ void StereoPannerAudioProcessorEditor::buttonClicked (Button* buttonThatWasClick
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == togglePanningAlgorithm)
+    if (buttonThatWasClicked == togglePanningAlgorithm.get())
     {
         //[UserButtonCode_togglePanningAlgorithm] -- add your button handler code here..
         processor.constantPower = togglePanningAlgorithm->getToggleState();
@@ -145,13 +149,14 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="StereoPannerAudioProcessorEditor"
                  componentName="" parentClasses="public AudioProcessorEditor, public Timer"
                  constructorParams=" StereoPannerAudioProcessor&amp; p" variableInitialisers="AudioProcessorEditor(p), processor(p)&#10;"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.33"
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="ff000000"/>
   <SLIDER name="new slider" id="6d5ba74f0492c1e4" memberName="sliderPanPosition"
-          virtualName="" explicitFocusOrder="0" pos="24 24 159 168" min="-1"
-          max="1" int="0" style="Rotary" textBoxPos="TextBoxBelow" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="24 24 159 168" min="-1.0"
+          max="1.0" int="0.0" style="Rotary" textBoxPos="TextBoxBelow"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
+          needsCallback="1"/>
   <TOGGLEBUTTON name="new toggle button" id="623ec6df99e7a96e" memberName="togglePanningAlgorithm"
                 virtualName="" explicitFocusOrder="0" pos="64 216 150 24" buttonText="Constant Power"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>

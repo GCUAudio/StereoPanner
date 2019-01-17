@@ -7,12 +7,12 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.1
+  Created with Projucer version: 5.4.1
 
   ------------------------------------------------------------------------------
 
-  The Projucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+  The Projucer is part of the JUCE library.
+  Copyright (c) 2017 - ROLI Ltd.
 
   ==============================================================================
 */
@@ -36,8 +36,8 @@
 */
 class StereoPannerAudioProcessorEditor  : public AudioProcessorEditor,
                                           public Timer,
-                                          public SliderListener,
-                                          public ButtonListener
+                                          public Slider::Listener,
+                                          public Button::Listener
 {
 public:
     //==============================================================================
@@ -62,8 +62,8 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<Slider> sliderPanPosition;
-    ScopedPointer<ToggleButton> togglePanningAlgorithm;
+    std::unique_ptr<Slider> sliderPanPosition;
+    std::unique_ptr<ToggleButton> togglePanningAlgorithm;
 
 
     //==============================================================================
