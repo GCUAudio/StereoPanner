@@ -8,11 +8,9 @@
   ==============================================================================
 */
 
-#ifndef PLUGINPROCESSOR_H_INCLUDED
-#define PLUGINPROCESSOR_H_INCLUDED
+#pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-
 
 //==============================================================================
 /**
@@ -32,7 +30,7 @@ public:
     bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
    #endif
 
-    void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
+    void processBlock (AudioBuffer<float>&, MidiBuffer&) override;
 
     //==============================================================================
     AudioProcessorEditor* createEditor() override;
@@ -43,6 +41,7 @@ public:
 
     bool acceptsMidi() const override;
     bool producesMidi() const override;
+    bool isMidiEffect() const override;
     double getTailLengthSeconds() const override;
 
     //==============================================================================
@@ -55,14 +54,11 @@ public:
     //==============================================================================
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
-    
-    float panPosition;
-    bool constantPower;
 
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StereoPannerAudioProcessor)
+    
+    AudioParameterFloat* panPosition;
+	AudioParameterBool* constantPower;
 };
-
-
-#endif  // PLUGINPROCESSOR_H_INCLUDED
