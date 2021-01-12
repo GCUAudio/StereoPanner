@@ -1,9 +1,7 @@
 /*
   ==============================================================================
 
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin processor.
+    This file contains the basic framework code for a JUCE plugin processor.
 
   ==============================================================================
 */
@@ -17,18 +15,16 @@ StereoPannerAudioProcessor::StereoPannerAudioProcessor()
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  AudioChannelSet::stereo(), true)
+                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
                       #endif
-                       .withOutput ("Output", AudioChannelSet::stereo(), true)
+                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
                        )
 #endif
 {
-	// Adds the parameters to the AudioProcessor
-	panPosition = new AudioParameterFloat("panPosition", "Pan Position", -1.0f, 1.0f, 0.0f); 
-	constantPower = new AudioParameterBool("constantPower", "Constant Power", false); 
-	addParameter(panPosition); 
-	addParameter(constantPower);
+   // Adds the threshold parameter to the AudioProcessor
+   panPosition = new juce::AudioParameterFloat("panPosition", "Pan Position", -1.0f, 1.0f, 0.0f); // (1)
+   addParameter(panPosition); // (2)
 
 }
 
@@ -37,7 +33,7 @@ StereoPannerAudioProcessor::~StereoPannerAudioProcessor()
 }
 
 //==============================================================================
-const String StereoPannerAudioProcessor::getName() const
+const juce::String StereoPannerAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
@@ -89,12 +85,12 @@ void StereoPannerAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const String StereoPannerAudioProcessor::getProgramName (int index)
+const juce::String StereoPannerAudioProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void StereoPannerAudioProcessor::changeProgramName (int index, const String& newName)
+void StereoPannerAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
 }
 
@@ -115,13 +111,13 @@ void StereoPannerAudioProcessor::releaseResources()
 bool StereoPannerAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
-    ignoreUnused (layouts);
+    juce::ignoreUnused (layouts);
     return true;
   #else
     // This is the place where you check if the layout is supported.
     // In this template code we only support mono or stereo.
-    if (layouts.getMainOutputChannelSet() != AudioChannelSet::mono()
-     && layouts.getMainOutputChannelSet() != AudioChannelSet::stereo())
+    if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
+     && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
 
     // This checks if the input layout matches the output layout
@@ -135,9 +131,9 @@ bool StereoPannerAudioProcessor::isBusesLayoutSupported (const BusesLayout& layo
 }
 #endif
 
-void StereoPannerAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
+void StereoPannerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    ScopedNoDenormals noDenormals;
+    juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
@@ -150,47 +146,29 @@ void StereoPannerAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiB
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-	// Calculate out of for loop for efficiency
-	const float PI = 3.14159265359f;
-	float temp = panPosition->get() + 1.0f;
-	float pDash = 0.0f;
+    // calculate p’
+    float pDash = (panPosition->get() + 1.0f) / 2.0f;
+
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        auto* channelData = buffer.getWritePointer(channel);
 
         for (int i = 0; i < buffer.getNumSamples(); i++)
-		{
-			if (constantPower->get()) // If constant power is selected run code in these brackets
-			{
-				pDash = (temp * PI) / 4;
-
-				if (channel == 0) // Left channel
-				{
-					channelData[i] = channelData[i] * cos(pDash);
-				}
-				else // Right channel (or any other channel)
-				{
-					channelData[i] = channelData[i] * sin(pDash);
-				}
-			}
-			else // Otherwise run this code
-			{
-				pDash = temp / 2;
-
-				if (channel == 0) // Left channel
-				{
-					channelData[i] = channelData[i] * (1.0 - pDash);
-				}
-				else // Right channel (or any other channel)
-				{
-					channelData[i] = channelData[i] * pDash;
-				}
-			}
-		}
+        {
+            if (channel == 0) // Left channel
+            {
+                channelData[i] = channelData[i] * (1.0 - pDash);
+            }
+            else // Right channel (or any other channel)
+            {
+                channelData[i] = channelData[i] * pDash;
+            }
+        }
     }
+
 }
 
 //==============================================================================
@@ -199,20 +177,17 @@ bool StereoPannerAudioProcessor::hasEditor() const
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-AudioProcessorEditor* StereoPannerAudioProcessor::createEditor()
+juce::AudioProcessorEditor* StereoPannerAudioProcessor::createEditor()
 {
-    return new GenericAudioProcessorEditor(this);
+    return new juce::GenericAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void StereoPannerAudioProcessor::getStateInformation (MemoryBlock& destData)
+void StereoPannerAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
-	MemoryOutputStream stream(destData, true);
-	stream.writeFloat(*panPosition);
-	stream.writeBool(*constantPower);
+    juce::MemoryOutputStream stream(destData, true);
+    stream.writeFloat(*panPosition);
 
 }
 
@@ -220,15 +195,15 @@ void StereoPannerAudioProcessor::setStateInformation (const void* data, int size
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-	MemoryInputStream stream(data, static_cast<size_t> (sizeInBytes), false);
-	*panPosition = stream.readFloat();
-	*constantPower = stream.readBool();
+
+    juce::MemoryInputStream stream(data, static_cast<size_t> (sizeInBytes), false);
+    *panPosition = stream.readFloat();
 
 }
 
 //==============================================================================
 // This creates new instances of the plugin..
-AudioProcessor* JUCE_CALLTYPE createPluginFilter()
+juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new StereoPannerAudioProcessor();
 }
