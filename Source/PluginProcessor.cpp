@@ -24,8 +24,10 @@ StereoPannerAudioProcessor::StereoPannerAudioProcessor()
 {
    // Adds the threshold parameter to the AudioProcessor
    panPosition = new juce::AudioParameterFloat("panPosition", "Pan Position", -1.0f, 1.0f, 0.0f); // (1)
-   addParameter(panPosition); // (2)
+   addParameter(panPosition); 
 
+   algortihmChoice = new juce::AudioParameterChoice("algortihmChoice", "Choose panning", { "Linear", "Constant" }, 0);
+   addParameter(algortihmChoice);
 }
 
 StereoPannerAudioProcessor::~StereoPannerAudioProcessor()
@@ -146,9 +148,11 @@ void StereoPannerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // calculate p’
+    // calculate pâ€™
     float pDash = (panPosition->get() + 1.0f) / 2.0f;
 
+    // User choice
+    int choice = algortihmChoice->getIndex();
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
