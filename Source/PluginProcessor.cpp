@@ -148,11 +148,24 @@ void StereoPannerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // calculate p’
-    float pDash = (panPosition->get() + 1.0f) / 2.0f;
+    float gainL = 0.0f;
+    float gainR = 0.0f;
 
     // User choice
     int choice = algortihmChoice->getIndex();
+
+    if (choice == 0) 
+    {
+        float pDash = (panPosition->get() + 1.0f) / 2.0f;
+        gainL = (1.0 - pDash);
+        gainR = pDash;
+    }
+    else
+    {
+        float pDash = juce::MathConstants<float>::pi * (panPosition->get() + 1.0f) / 4.0f;
+        gainL = cos(pDash);
+        gainR = sin(pDash);
+    }
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
@@ -164,11 +177,11 @@ void StereoPannerAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         {
             if (channel == 0) // Left channel
             {
-                channelData[i] = channelData[i] * (1.0 - pDash);
+                channelData[i] = channelData[i] * gainL;
             }
             else // Right channel (or any other channel)
             {
-                channelData[i] = channelData[i] * pDash;
+                channelData[i] = channelData[i] * gainR;
             }
         }
     }
